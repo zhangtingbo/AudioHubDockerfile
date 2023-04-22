@@ -5,7 +5,7 @@ ENV MONGO_DB_USERNAME=admin \
 
 RUN mkdir -p /home/audiohub
 
-COPY ./deploy /home/audiohub
+COPY ./deploy2docker /home/audiohub
 
 # set default dir so that next commands executes in /home/app dir
 WORKDIR /home/audiohub

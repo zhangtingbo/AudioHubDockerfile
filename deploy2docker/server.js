@@ -257,34 +257,20 @@ app.get('/api/checkpassword/',async (req,res)=>{
 /**
  * delete user
  */
-app.delete('/api/deleteaccount/', async (req, res) => {
+app.delete('/api/deleteaccount/:id', async (req, res) => {
+  const userId = req.params.id;
+
   try {
-    const { userid } = req.query;
+    const deletedUser = await User.findByIdAndDelete(userId);
 
-    const defaultuser = await User.findOne({ username: "administrator" }).exec();
-    if(defaultuser._id.toString()==userid){
-      console.log("Can not delete Administrator")
-      res.status(500).json({ message: 'Administrator can not be deleted' });
+    if (!deletedUser) {
+      return res.status(404).send({ error: 'User not found' });
     }
-    else{
-      // delete all audios which are created by this user
-      // let message = '';
-      // gfs.deleteMany({ 'metadata.userid': userid }).then(res=>{
-      //   // message ='Delete Audios Successed';
-      // }).catch(err=>{
-      //   // message ='Delete Audios failed';
-      // });
 
-      await User.findByIdAndDelete(userid).then(res=>{
-        res.status(200).json({ message: 'Delete Account Successed' });
-      }).catch(err=>{
-        console.log(err);
-        res.status(500).json({ message: 'Delete Account Failed' });
-      })
-    }
+    res.send(deletedUser);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Delete Account Failed' });
+    res.status(500).send({ error: 'Server error' });
   }
 });
 
@@ -314,13 +300,7 @@ app.post('/api/audioupload', upload.single('file'), async (req, res) => {
 app.get('/api/audiolist', async (req, res) => {
     
   const files = await gfs.find().toArray();
-
-  if(files && files.length > 0){
     return res.status(200).json({ message: 'Get audio files', files });
-  }
-  else{
-    return res.status(500).json({ message: 'Internal server error',files:[] });
-  }
   
 });
 
