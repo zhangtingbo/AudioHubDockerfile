@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build',"/index.html"));
 });
 
-// if not in production use the port 5000
-const PORT = process.env.PORT || 5010;
+// if not in production use the port 5010
+const PORT = 5010;
 const hostUrl = "http://localhost:"+PORT;
 console.log('server started on port:', PORT);
 app.listen(PORT);
@@ -85,6 +85,7 @@ const storage = new GridFsStorage({
     });
   }
 });
+const upload = multer({ storage });
 
 /**
  * User Login services
